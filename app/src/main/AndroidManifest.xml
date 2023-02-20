@@ -78,10 +78,6 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/MyTitledActivityDialogTheme" />
         <activity
-            android:name=".GroupsAddActivity"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ViewUserProfileActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
@@ -91,13 +87,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".UsersActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".GroupsMessagesActivity"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".GroupsParticipantsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ImageViewerActivity"

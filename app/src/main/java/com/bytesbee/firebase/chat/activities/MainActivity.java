@@ -32,7 +32,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bytesbee.firebase.chat.activities.fragments.ChatsFragment;
-import com.bytesbee.firebase.chat.activities.fragments.GroupsFragment;
 import com.bytesbee.firebase.chat.activities.fragments.ProfileFragment;
 import com.bytesbee.firebase.chat.activities.managers.Utils;
 import com.bytesbee.firebase.chat.activities.models.User;
@@ -124,7 +123,6 @@ public class MainActivity extends BaseActivity {
 
         final ViewPageAdapter viewPageAdapter = new ViewPageAdapter(this);
         viewPageAdapter.addFragment(new ChatsFragment(), getString(R.string.strChats));
-        viewPageAdapter.addFragment(new GroupsFragment(), getString(R.string.strGroups));
         viewPageAdapter.addFragment(new ProfileFragment(), getString(R.string.strProfile));
 
         mViewPager.setAdapter(viewPageAdapter);
@@ -165,8 +163,6 @@ public class MainActivity extends BaseActivity {
             public void onClickView(View v) {
                 if (mViewPager.getCurrentItem() == ZERO) {
                     screens.showCustomScreen(UsersActivity.class);
-                } else if (mViewPager.getCurrentItem() == ONE) {
-                    screens.showCustomScreen(GroupsAddActivity.class);
                 }
             }
         });

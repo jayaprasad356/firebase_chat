@@ -127,7 +127,7 @@
 
     <!-- New v1.4 -->
     <!-- New v1.4 -->
-    <string name="strTypeYourMessage">Type your message</string>
+    <string name="strTypeYourMessage">Send Audio Or Image</string>
     <string name="msgNoImageSelected">No Image selected!</string>
     <string name="lblImage">Image</string>
     <string name="lblAudio">Audio</string>

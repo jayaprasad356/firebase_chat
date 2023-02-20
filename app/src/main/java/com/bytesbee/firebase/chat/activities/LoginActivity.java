@@ -67,7 +67,6 @@ public class LoginActivity extends BaseActivity {
         mTxtEmail = findViewById(R.id.txtEmail);
         mTxtPassword = findViewById(R.id.txtPassword);
         final Button mBtnSignUp = findViewById(R.id.btnSignUp);
-        final GoogleSignInButton btnGoogleSignIn = findViewById(R.id.btnGoogleSignIn);
         final TextView mTxtNewUser = findViewById(R.id.txtNewUser);
         final TextView txtForgetPassword = findViewById(R.id.txtForgetPassword);
 
@@ -113,13 +112,6 @@ public class LoginActivity extends BaseActivity {
                 screens.showCustomScreen(RegisterActivity.class);
             }
         });
-        btnGoogleSignIn.setOnClickListener(new SingleClickListener() {
-            @Override
-            public void onClickView(View v) {
-                signIn();
-            }
-        });
-
     }
 
     private void login(String email, String password) {
@@ -134,107 +126,4 @@ public class LoginActivity extends BaseActivity {
             }
         }).addOnFailureListener(e -> hideProgress()).addOnCanceledListener(this::hideProgress);
     }
-
-    //==========================================================================
-    // ===== Google Sign in ====
-    //==========================================================================
-    private void signIn() {
-        try {
-            showProgress();
-            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-            googleSignInLauncher.launch(signInIntent);
-        } catch (Exception e) {
-            Utils.getErrors(e);
-        }
-    }
-
-    private void firebaseAuthWithGoogle(String idToken) {
-        try {
-            AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-            auth.signInWithCredential(credential).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {// Sign in success, update UI with the signed-in user's information
-                    FirebaseUser user = auth.getCurrentUser();
-                    Utils.sout("User::: " + user.getPhotoUrl());
-                    final String userId = Objects.requireNonNull(user).getUid();
-                    try {
-                        final String username = Utils.isEmpty(user.getDisplayName()) ? user.getEmail() : user.getDisplayName();
-                        reference = FirebaseDatabase.getInstance().getReference(REF_USERS).child(userId);
-                        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                try {
-                                    Utils.sout("UserID Available::: " + userId + " >> " + dataSnapshot.hasChildren());
-                                    if (dataSnapshot.hasChildren()) {
-                                        hideProgress();
-                                        screens.showClearTopScreen(MainActivity.class);
-                                    } else {
-                                        final HashMap<String, Object> hashMap = new HashMap<>();
-                                        hashMap.put(EXTRA_ID, userId);
-                                        hashMap.put(EXTRA_EMAIL, user.getEmail());
-                                        hashMap.put(EXTRA_USERNAME, Utils.getCapsWord(username));
-                                        hashMap.put(EXTRA_PASSWORD, user.getEmail());
-                                        hashMap.put(EXTRA_IMAGEURL, Utils.isEmpty(user.getPhotoUrl()) ? IMG_DEFAULTS : URLEncoder.encode(user.getPhotoUrl().toString(), "UTF-8"));
-                                        hashMap.put(EXTRA_ACTIVE, true);
-                                        hashMap.put(EXTRA_IS_ONLINE, STATUS_ONLINE);
-                                        hashMap.put(EXTRA_SEARCH, Objects.requireNonNull(username).toLowerCase().trim());
-                                        hashMap.put(EXTRA_CREATED_AT, Utils.getDateTime());
-                                        hashMap.put(EXTRA_VERSION, BuildConfig.VERSION_NAME);
-                                        hashMap.put(EXTRA_SIGNUP_TYPE, TYPE_GOOGLE);
-                                        hashMap.put(EXTRA_SOCIAL_TOKEN, idToken);
-
-                                        reference.setValue(hashMap).addOnCompleteListener(task1 -> {
-                                            try {
-                                                if (task1.isSuccessful()) {
-                                                    hideProgress();
-                                                    screens.showClearTopScreen(MainActivity.class);
-                                                }
-                                            } catch (Exception e) {
-                                                Utils.getErrors(e);
-                                            }
-                                        });
-                                    }
-                                } catch (Exception ignored) {
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                hideProgress();
-                            }
-                        });
-                    } catch (Exception e) {
-                        hideProgress();
-                        Utils.getErrors(e);
-                    }
-                } else {// If sign in fails, display a message to the user.
-                    hideProgress();
-                    Utils.getErrors(task.getException());
-                    screens.showToast(Objects.requireNonNull(task.getException()).getLocalizedMessage());
-                }
-            }).addOnFailureListener(e -> {
-                hideProgress();
-                screens.showToast(e.getMessage());
-            }).addOnCanceledListener(this::hideProgress);
-        } catch (Exception e) {
-            Utils.getErrors(e);
-        }
-    }
-
-    final ActivityResultLauncher<Intent> googleSignInLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-            try {
-                final Intent data = result.getData();
-                assert data != null;
-                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                try {// Google Sign In was successful, authenticate with Firebase
-                    GoogleSignInAccount account = task.getResult(ApiException.class);
-                    firebaseAuthWithGoogle(account.getIdToken());
-                } catch (ApiException e) {// Google Sign In failed, update UI appropriately
-                    Utils.getErrors(e);
-                }
-            } catch (Exception e) {
-                Utils.getErrors(e);
-            }
-        }
-    });
 }

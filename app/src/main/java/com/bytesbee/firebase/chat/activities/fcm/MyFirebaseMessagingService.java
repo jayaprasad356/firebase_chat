@@ -26,7 +26,6 @@ import android.os.Bundle;
 
 import androidx.core.app.NotificationCompat;
 
-import com.bytesbee.firebase.chat.activities.GroupsMessagesActivity;
 import com.bytesbee.firebase.chat.activities.MessageActivity;
 import com.bytesbee.firebase.chat.activities.R;
 import com.bytesbee.firebase.chat.activities.managers.SessionManager;
@@ -114,15 +113,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         final Bundle bundle = new Bundle();
 
-        Intent intent;
+        Intent intent = null;
         if (Utils.isEmpty(strGroups)) {
             intent = new Intent(this, MessageActivity.class);
             bundle.putString(EXTRA_USER_ID, user);
-        } else {
-            intent = new Intent(this, GroupsMessagesActivity.class);
-            Groups groups = new Gson().fromJson(strGroups, Groups.class);
-            bundle.putSerializable(EXTRA_OBJ_GROUP, groups);
-        }
+        } 
 
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -61,7 +61,7 @@ public class ProfileDialogActivity extends AppCompatActivity {
                 @Override
                 public void onClickView(View v) {
                     if (isGroupObj) {
-                        screens.openGroupMessageActivity(groups);
+
                     } else {
                         screens.openUserMessageActivity(user.getId());
                     }
@@ -73,7 +73,7 @@ public class ProfileDialogActivity extends AppCompatActivity {
                 @Override
                 public void onClickView(View v) {
                     if (isGroupObj) {
-                        screens.openGroupParticipantActivity(groups);
+
                     } else {
                         screens.openViewProfileActivity(user.getId());
                     }

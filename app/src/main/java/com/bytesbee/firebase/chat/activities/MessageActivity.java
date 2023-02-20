@@ -209,11 +209,10 @@ public class MessageActivity extends BaseActivity implements View.OnClickListene
 
     //New Component
     private LinearLayout btnGoToBottom;
-    private EmojiPopup emojiIcon;
     private CardView mainAttachmentLayout;
     private View attachmentBGView;
     private EmojiEditText newMessage;
-    private ImageView imgAddAttachment, imgAttachmentEmoji, imgCamera;
+    private ImageView imgAddAttachment, imgCamera;
     private RelativeLayout rootView;
 
     //Picker
@@ -370,10 +369,6 @@ public class MessageActivity extends BaseActivity implements View.OnClickListene
             }
         });
 
-        emojiIcon = EmojiPopup.Builder.fromRootView(rootView).setOnEmojiPopupShownListener(() -> {
-            hideAttachmentView();
-            imgAttachmentEmoji.setImageResource(R.drawable.ic_keyboard_24dp);
-        }).setOnEmojiPopupDismissListener(() -> imgAttachmentEmoji.setImageResource(R.drawable.ic_insert_emoticon_gray)).setKeyboardAnimationStyle(R.style.emoji_fade_animation_style).build(newMessage);
 
         newMessage.setOnTouchListener((v, event) -> {
             hideAttachmentView();
@@ -409,17 +404,13 @@ public class MessageActivity extends BaseActivity implements View.OnClickListene
         attachmentBGView.setVisibility(View.GONE);
         attachmentBGView.setOnClickListener(this);
 
-        imgAttachmentEmoji = findViewById(R.id.imgAttachmentEmoji);
 
         imgAddAttachment.setOnClickListener(this);
         imgCamera.setOnClickListener(this);
-        imgAttachmentEmoji.setOnClickListener(this);
-        findViewById(R.id.btnAttachmentVideo).setOnClickListener(this);
-        findViewById(R.id.btnAttachmentContact).setOnClickListener(this);
+
         findViewById(R.id.btnAttachmentGallery).setOnClickListener(this);
         findViewById(R.id.btnAttachmentAudio).setOnClickListener(this);
-        findViewById(R.id.btnAttachmentLocation).setOnClickListener(this);
-        findViewById(R.id.btnAttachmentDocument).setOnClickListener(this);
+
 
         recordView = findViewById(R.id.recordView);
         recordButton = findViewById(R.id.recordButton);
@@ -515,7 +506,6 @@ public class MessageActivity extends BaseActivity implements View.OnClickListene
         if (isStart) {
             final Handler handler = new Handler(Looper.getMainLooper());
             handler.postDelayed(() -> {
-                imgAttachmentEmoji.setVisibility(View.VISIBLE);
                 newMessage.setVisibility(View.VISIBLE);
                 imgAddAttachment.setVisibility(View.VISIBLE);
                 imgCamera.setVisibility(View.VISIBLE);
@@ -526,7 +516,6 @@ public class MessageActivity extends BaseActivity implements View.OnClickListene
 
     private void hideEditTextLayout() {
         isStart = true;
-        imgAttachmentEmoji.setVisibility(View.GONE);
         newMessage.setVisibility(View.INVISIBLE);
         imgAddAttachment.setVisibility(View.GONE);
         imgCamera.setVisibility(View.GONE);
@@ -547,8 +536,7 @@ public class MessageActivity extends BaseActivity implements View.OnClickListene
         if (id == R.id.recordButton) {
             hideAttachmentView();
             clickToSend();
-        } else if (id == R.id.imgAttachmentEmoji) {
-            emojiIcon.toggle();
+
         } else if (id == R.id.imgAddAttachment) {
             if (!blockUnblockCheckBeforeSend()) {
                 fileUri = null;
@@ -573,18 +561,6 @@ public class MessageActivity extends BaseActivity implements View.OnClickListene
         } else if (id == R.id.btnAttachmentAudio) {
             hideAttachmentView();
             openAudioPicker();
-        } else if (id == R.id.btnAttachmentLocation) {
-            hideAttachmentView();
-            openPlacePicker();
-        } else if (id == R.id.btnAttachmentVideo) {
-            hideAttachmentView();
-            openVideoPicker();
-        } else if (id == R.id.btnAttachmentDocument) {
-            hideAttachmentView();
-            openDocumentPicker();
-        } else if (id == R.id.btnAttachmentContact) {
-            hideAttachmentView();
-            openContactPicker();
         } else if (id == R.id.attachmentBGView) {
             hideAttachmentView();
         }
@@ -1620,7 +1596,6 @@ public class MessageActivity extends BaseActivity implements View.OnClickListene
         mainAttachmentLayout.setVisibility(View.VISIBLE);
         attachmentBGView.setVisibility(View.VISIBLE);
         imgAddAttachment.animate().setDuration(400).rotationBy(45).start();
-        emojiIcon.dismiss();
     }
 
     private void recordingStop(boolean send) {

@@ -22,8 +22,6 @@ import android.widget.Toast;
 
 import androidx.core.app.ActivityOptionsCompat;
 
-import com.bytesbee.firebase.chat.activities.GroupsMessagesActivity;
-import com.bytesbee.firebase.chat.activities.GroupsParticipantsActivity;
 import com.bytesbee.firebase.chat.activities.ImageViewerActivity;
 import com.bytesbee.firebase.chat.activities.MessageActivity;
 import com.bytesbee.firebase.chat.activities.OnBoardingActivity;
@@ -121,17 +119,8 @@ public class Screens {
         context.startActivity(intent);
     }
 
-    public void openGroupMessageActivity(final Groups object) {
-        final Intent intent = new Intent(new Intent(context, GroupsMessagesActivity.class));
-        intent.putExtra(EXTRA_OBJ_GROUP, object);
-        context.startActivity(intent);
-    }
 
-    public void openGroupParticipantActivity(final Groups groups) {
-        final Intent intent = new Intent(context, GroupsParticipantsActivity.class);
-        intent.putExtra(EXTRA_OBJ_GROUP, groups);
-        ((Activity) context).startActivityForResult(intent, REQUEST_PARTICIPATE);
-    }
+
 
     public void openFullImageViewActivity(final View view, final String imgPath, final String username) {
         openFullImageViewActivity(view, imgPath, "", username);
